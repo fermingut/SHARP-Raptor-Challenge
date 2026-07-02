@@ -90,13 +90,16 @@ sup { font-size: 0.65em; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 40px;
   margin-bottom: 32px;
   flex-wrap: wrap;
 }
 
 .logos img {
-  height: 70px;
+  max-height: 50px;
+  max-width: 150px;
+  width: auto;
+  height: auto;
   filter: grayscale(1) brightness(1.8);
   opacity: 0.85;
   transition: opacity 0.15s ease;
