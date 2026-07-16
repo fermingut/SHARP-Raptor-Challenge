@@ -6,16 +6,10 @@
   <title>The SHARP-Raptor Challenge: Surface Pressure Prediction on an F-22 Airfoil Section</title>
   <meta name="description" content="A high-speed machine learning benchmark for surface pressure prediction on a transonic F-22 airfoil section.">
 
-  <!-- TODO: Open Graph / Twitter card meta tags once the page is hosted, e.g.
-  <meta property="og:title" content="...">
-  <meta property="og:image" content="https://<user>.github.io/<repo>/src/images/og-cover.png">
-  -->
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ============ HEADER ============ -->
   <header class="hero">
     <div class="hero-inner">
       <p class="kicker">Benchmark &amp; Challenge</p>
@@ -55,13 +49,12 @@
         </a>
       </div>
 
-      <!-- ============ LINK BUTTONS ============ -->
       <nav class="link-row">
         <a class="btn" href="#">📄 Paper</a>
         <a class="btn" href="#">📚 arXiv</a>
         <a class="btn" href="https://github.com/ArnauMiro/pyLowOrder.git" target="_blank" rel="noopener">💻 Code</a>
         <a class="btn" href="https://github.com/fermingut/SHARP-Raptor-Challenge.git" target="_blank" rel="noopener">📊 Baselines</a>
-        <a class="btn btn-accent" href="#">📦 Database</a>
+        <a class="btn btn-accent" href="#database">📦 Database</a>
         <a class="btn" href="https://www.kaggle.com/competitions/sharp-raptor-challenge" target="_blank" rel="noopener">🏆 Leaderboard</a>
       </nav>
     </div>
@@ -69,85 +62,193 @@
 
   <main>
 
-    <!-- ============ ABSTRACT ============ -->
     <section id="abstract" class="section">
       <h2>Abstract</h2>
-      <p class="placeholder">
-        <!-- TODO: write abstract -->
-        Abstract coming soon.
+      <p>
+        Predicting how air pressure distributes itself over a wing is one of the central problems in aerodynamic design. This distribution—the <strong>pressure coefficient (C<sub>p</sub>)</strong> at every point along an airfoil's surface—determines critical aerodynamic performance indicators such as lift, drag, and structural loads. 
+      </p>
+      <p>
+        Typically, C<sub>p</sub> curves are obtained by running expensive Reynolds-Averaged Navier-Stokes (RANS) CFD simulations. Since each simulation can take from several minutes to hours, exploring the vast multi-dimensional operating space during early-stage aircraft design is computationally prohibitive.
+      </p>
+      <p>
+        <strong>The SHARP-Raptor Challenge</strong> addresses this bottleneck as a high-speed machine learning benchmark for surrogate modeling. Given only two inputs—the freestream <strong>Mach number</strong> and the <strong>angle of attack (&alpha;)</strong>—your task is to build a model capable of accurately predicting the complete C<sub>p</sub> distribution across 13,862 physical points of an F-22 fighter airfoil section. 
+      </p>
+      <p>
+        By substituting expensive physics solvers with instantaneous ML inference, this challenge aims to evaluate the limits of ML models in learning and generalization across highly non-linear subsonic, transonic, and supersonic flow regimes.
       </p>
     </section>
 
-    <!-- ============ DATABASE ============ -->
     <section id="database" class="section section-alt">
       <h2>Database</h2>
-      <p class="placeholder">
-        <!-- TODO: describe the dataset: geometry, flow conditions, format, train/test split, size, license, download link -->
-        Database description coming soon.
+      <p>
+        All samples in this dataset correspond to <strong>the exact same fixed airfoil geometry</strong> (an F-22 Raptor airfoil section), evaluated across various flow conditions. The geometry and point distribution remain identical across all cases; only the flow environment changes.
       </p>
+      
+      <p>Each flow condition is parameterized by:</p>
+      <ul>
+        <li><strong>Mach number (<code>mach</code>):</strong> Freestream Mach number, ranging from <strong>0.3 to 1.4</strong> (covering subsonic, transonic, and supersonic regimes).</li>
+        <li><strong>Angle of attack (<code>alpha</code> / <code>aoa</code>):</strong> Angle of attack in degrees, ranging from <strong>0&deg; to 5&deg;</strong>.</li>
+      </ul>
+
+      <p>
+        For each combination of Mach and &alpha;, the pressure coefficient (<strong>C<sub>p</sub></strong>) is provided at <strong>13,862 fixed points</strong> along the airfoil's boundary. The same physical points (mapped via <code>point_id</code>) are preserved across all data files. 
+        <em>Note: The Reynolds number is held constant for all cases and is not required as an input.</em>
+      </p>
+
+      <h3>Challenge Files</h3>
+      <p>The dataset consists of the following files, which can be easily linked together using the <code>point_id</code> or <code>id</code> variables:</p>
+
+      <div class="table-container">
+        <div class="table-title">1. train.csv</div>
+        <p class="table-desc">The training set, containing 85 complete cases (85 conditions &times; 13,862 points = 1,178,270 rows). The target label (<code>cp</code>) is fully provided.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>id</code></td>
+              <td>string</td>
+              <td>Unique row identifier</td>
+            </tr>
+            <tr>
+              <td><code>case_id</code></td>
+              <td>int</td>
+              <td>Flow-condition identifier (0–70)</td>
+            </tr>
+            <tr>
+              <td><code>point_id</code></td>
+              <td>int</td>
+              <td>Surface point identifier (0–13861), consistent across all files</td>
+            </tr>
+            <tr>
+              <td><code>mach</code></td>
+              <td>float</td>
+              <td>Freestream Mach number (0.3 to 1.4)</td>
+            </tr>
+            <tr>
+              <td><code>aoa</code></td>
+              <td>float</td>
+              <td>Angle of attack in degrees (0 to 5)</td>
+            </tr>
+            <tr>
+              <td><code>cp</code></td>
+              <td>float</td>
+              <td><strong>Target</strong> — pressure coefficient at the given point</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">2. test.csv</div>
+        <p class="table-desc">The evaluation set, containing 15 unvalidated flow conditions (15 conditions &times; 13,862 points = 207,930 rows). This file is identical to <code>train.csv</code>, but the <code>cp</code> column is withheld.</p>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">3. airfoil_coordinates.csv</div>
+        <p class="table-desc">The spatial coordinate map of the fixed F-22 section geometry. You can join this table with train/test sets using <code>point_id</code> to incorporate physical coordinates into your spatial models.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>point_id</code></td>
+              <td>int</td>
+              <td>Surface point identifier</td>
+            </tr>
+            <tr>
+              <td><code>x</code></td>
+              <td>float</td>
+              <td>Chordwise spatial coordinate</td>
+            </tr>
+            <tr>
+              <td><code>y</code></td>
+              <td>float</td>
+              <td>Surface-normal spatial coordinate</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">4. validation_cases.csv</div>
+        <p class="table-desc">Contains the exact flow condition IDs used in our validation splits for hyperparameter tuning. It is provided for replicability purposes.</p>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">5. sample_submission.csv</div>
+        <p class="table-desc">An example submission template showing the exact format required. It includes the <code>id</code> column and a <code>cp</code> prediction column (pre-filled with zeros).</p>
+      </div>
+
     </section>
 
-    <!-- ============ METHODS ============ -->
     <section id="methods" class="section">
       <h2>Methods</h2>
       <p class="placeholder">
-        <!-- TODO: describe baseline models (MLP, KAN, RBF-ELM, diffusion-based) and evaluation protocol -->
-        Methods description coming soon.
+        We are currently documenting our baseline architectures, including Multi-Layer Perceptrons (MLPs), Kolmogorov-Arnold Networks (KANs), Radial Basis Function - Extreme Learning Machines (RBF-ELMs), and diffusion-based models. 
+      </p>
+      <p class="placeholder">
+        Complete methodology documentation, modeling code, and training pipelines will be available soon.
       </p>
     </section>
 
-    <!-- ============ RESULTS ============ -->
     <section id="results" class="section section-alt">
       <h2>Results</h2>
       <p class="placeholder">
-        <!-- TODO: add results tables / figures / leaderboard snapshot -->
-        Results coming soon.
+        Baseline performance benchmarks and Kaggle leaderboard snapshots will be published here upon the official launch of the challenge. Stay tuned!
       </p>
     </section>
 
-    <!-- ============ BIBTEX ============ -->
     <section id="bibtex" class="section">
       <h2>BibTeX</h2>
       <div class="code-block">
         <button class="copy-btn" onclick="copyBibtex()">Copy</button>
         <pre id="bibtex-content">@misc{sharpraptor2026,
       title={The SHARP-Raptor Challenge: A High-Speed Machine Learning Benchmark for Surface Pressure Prediction on an F-22 Airfoil Section},
-      author={TODO: author list},
+      author={Jaraiz, Miguel and Ramos, David and Guti{\'e}rrez, Ferm{\'\i}n and Rubio, Gonzalo and Lacasa, Lucas and Valero, Eusebio},
       year={2026},
-      eprint={TODO},
+      eprint={coming soon},
       archivePrefix={arXiv},
       primaryClass={cs.LG},
-      url={TODO},
+      url={coming soon},
 }</pre>
       </div>
     </section>
 
-    <!-- ============ ACKNOWLEDGEMENTS ============ -->
     <section id="acknowledgements" class="section section-alt">
       <h2>Acknowledgements</h2>
-      <p class="placeholder">
+      <p class="placeholder" style="margin-bottom: 32px;">
         This work was supported by the following institutions and funding programs.
       </p>
       <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px;">
-      <a href="https://commission.europa.eu/index_en" target="_blank">
-        <img src="./src/images/ec-logo-horiz_en.png" alt="Funder 1" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
-      </a>
-      <a href="https://www.aei.gob.es/" target="_blank">
-        <img src="./src/images/MICIU+AEI.svg" alt="Funder 2" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
-      </a>
-      <a href="https://erc.europa.eu/homepage" target="_blank">
-        <img src="./src/images/ERC_logo.png" alt="Funder 3" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
-      </a>
-    </div>
+        <a href="https://commission.europa.eu/index_en" target="_blank">
+          <img src="./src/images/ec-logo-horiz_en.png" alt="European Commission" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
+        </a>
+        <a href="https://www.aei.gob.es/" target="_blank">
+          <img src="./src/images/MICIU+AEI.svg" alt="MICIU e AEI" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
+        </a>
+        <a href="https://erc.europa.eu/homepage" target="_blank">
+          <img src="./src/images/ERC_logo.png" alt="European Research Council" style="height: 60px; width: auto; opacity: 0.85; transition: opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85" />
+        </a>
+      </div>
     </section>
 
   </main>
 
-  <!-- ============ FOOTER ============ -->
   <footer class="footer">
     <p>&copy; 2026 SHARP-Raptor Challenge Authors &middot;
       <a href="#">Paper</a> &middot;
-      <a href="https://github.com/TU-USUARIO/TU-REPO" target="_blank" rel="noopener">Code</a> &middot;
+      <a href="https://github.com/ArnauMiro/pyLowOrder.git" target="_blank" rel="noopener">Code</a> &middot;
       <a href="#database">Database</a>
     </p>
   </footer>
