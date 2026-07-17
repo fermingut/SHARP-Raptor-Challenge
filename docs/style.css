@@ -169,10 +169,11 @@ sup { font-size: 0.65em; }
 
 .section h2 {
   font-size: 1.5rem;
-  margin: 0 auto 24px auto; /* Forzar centrado del h2, robusto en cualquier contenedor */
+  max-width: 760px; /* misma anchura que .section p, así el borde izquierdo coincide siempre */
+  margin: 0 auto 24px auto; /* centra la "caja" de 760px dentro de la sección */
   padding-bottom: 10px;
   border-bottom: 3px solid var(--accent);
-  display: table; /* se ajusta al contenido y respeta margin:auto sin depender del text-align del padre */
+  text-align: left; /* el texto queda pegado al borde izquierdo de esa caja */
 }
 
 .section h3 {
