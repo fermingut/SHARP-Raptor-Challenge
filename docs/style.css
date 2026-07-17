@@ -203,7 +203,7 @@ sup { font-size: 0.65em; }
 .placeholder {
   color: var(--ink-soft);
   font-style: italic;
-  text-align: center !important; /* Centrar placeholders visualmente */
+  text-align: left;
 }
 
 /* ============ TABLES ============ */
