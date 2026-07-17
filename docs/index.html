@@ -120,7 +120,7 @@
       </p>
     </section>
 
-        <section id="bibtex" class="section">
+    <section id="bibtex" class="section">
       <h2>BibTeX</h2>
       <div class="code-block">
         <button class="copy-btn" onclick="copyBibtex('bibtex-content', this)">Copy</button>
@@ -132,9 +132,9 @@
       archivePrefix={arXiv},
       primaryClass={cs.LG},
       url={coming soon},
-}</pre>
+      }</pre>
       </div>
- 
+
       <p class="table-desc" style="margin-top: 32px;">If you use pyLOM, please also cite:</p>
       <div class="code-block">
         <button class="copy-btn" onclick="copyBibtex('bibtex-content-pylom', this)">Copy</button>
@@ -145,7 +145,7 @@
       publisher={Barcelona Supercomputing Center},
       journal={GitHub repository},
       url={https://github.com/ArnauMiro/UPM_BSC_LowOrder},
-}</pre>
+      }</pre>
       </div>
     </section>
 
@@ -182,10 +182,9 @@
   </footer>
 
   <script>
-    function copyBibtex() {
-      const text = document.getElementById('bibtex-content').innerText;
+    function copyBibtex(elementId, btn) {
+      const text = document.getElementById(elementId).innerText;
       navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector('.copy-btn');
         const original = btn.innerText;
         btn.innerText = 'Copied!';
         setTimeout(() => (btn.innerText = original), 1500);

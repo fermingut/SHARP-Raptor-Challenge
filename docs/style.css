@@ -169,11 +169,13 @@ sup { font-size: 0.65em; }
 
 .section h2 {
   font-size: 1.5rem;
-  max-width: 760px; /* misma anchura que .section p, así el borde izquierdo coincide siempre */
-  margin: 0 auto 24px auto; /* centra la "caja" de 760px dentro de la sección */
-  padding-bottom: 10px;
-  border-bottom: 3px solid var(--accent);
-  text-align: left; /* el texto queda pegado al borde izquierdo de esa caja */
+  max-width: 760px;
+  margin: 0 auto 24px auto;
+  text-align: left;
+  text-decoration: underline;         /* en vez de border-bottom */
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 10px;        /* separación entre texto y línea, como el padding-bottom de antes */
 }
 
 .section h3 {
